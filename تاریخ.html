@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تاریخ شمسی، میلادی و قمری</title>
+    <style>
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .date-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .date-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .shamsi { color: #ffeb3b; }
+        .miladi { color: #03dac6; }
+        .ghamari { color: #ff6f61; }
+    </style>
+</head>
+<body>
+    <div class="date-container">
+        <h2>📅 تاریخ امروز</h2>
+        
+        <p class="date-title">🌞 تاریخ شمسی</p>
+        <p id="shamsi" class="shamsi"></p>
+
+        <p class="date-title">🌍 تاریخ میلادی</p>
+        <p id="miladi" class="miladi"></p>
+
+        <p class="date-title">🌙 تاریخ قمری</p>
+        <p id="ghamari" class="ghamari"></p>
+    </div>
+
+    <script>
+        function getShamsiDate() {
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            let shamsiDate = new Intl.DateTimeFormat('fa-IR', options).format(today);
+            let shamsiMonthNumber = new Intl.DateTimeFormat('fa-IR', { month: 'numeric' }).format(today);
+            return shamsiDate + " (ماه " + shamsiMonthNumber + ")";
+        }
+
+        function getMiladiDate() {
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            let miladiDate = new Intl.DateTimeFormat('en-US', options).format(today);
+            let miladiMonthNumber = new Intl.DateTimeFormat('en-US', { month: 'numeric' }).format(today);
+            return miladiDate + " (Month " + miladiMonthNumber + ")";
+        }
+
+        function getGhamariDate() {
+            let today = new Date();
+            let options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', calendar: 'islamic-umalqura' };
+            let ghamariDate = new Intl.DateTimeFormat('ar-TN', options).format(today);
+            let ghamariMonthNumber = new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(today);
+            return ghamariDate + " (شهر " + ghamariMonthNumber + ")";
+        }
+
+        document.getElementById("shamsi").innerText = getShamsiDate();
+        document.getElementById("miladi").innerText = getMiladiDate();
+        document.getElementById("ghamari").innerText = getGhamariDate();
+    </script>
+</body>
+</html>
