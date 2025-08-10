@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>تاریخ با آپدیت آنلاین و افکت</title>
+  <title>تاریخ و ساعت با افکت نئونی</title>
   <style>
     body {
       font-family: Tahoma, sans-serif;
@@ -17,6 +17,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
     .date-container {
       background: rgba(255, 255, 255, 0.1);
@@ -85,9 +86,54 @@
       width: 0;
       transition: width 1.5s ease;
     }
+
+    /* ساعت نئونی گوشه بالا راست */
+    #digitalClock {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #0ff; /* رنگ نئونی آبی-آبی فیروزه‌ای */
+      text-shadow:
+        0 0 5px #0ff,
+        0 0 10px #0ff,
+        0 0 20px #0ff,
+        0 0 30px #0ff;
+      font-family: 'Courier New', Courier, monospace;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* انیمیشن چرخش دایره ثانیه */
+    #secondSpinner {
+      width: 16px;
+      height: 16px;
+      border: 3px solid #0ff;
+      border-top: 3px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
   </style>
 </head>
 <body>
+  <div id="digitalClock">
+    <div id="timeText">--:--</div>
+    <div id="secondSpinner" title="در حال اجرا"></div>
+  </div>
+
   <div class="date-container">
     <h2>📅 تاریخ امروز</h2>
 
@@ -164,15 +210,12 @@
       const loadingBar = document.getElementById('loadingBar');
 
       if (isOnline) {
-        // شروع انیمیشن نوار بارگذاری
         loadingBar.style.width = '0%';
         loadingBar.style.transition = 'width 1.5s ease';
-        // با تاخیر انیمیشن رو اجرا کن
         setTimeout(() => {
           loadingBar.style.width = '100%';
         }, 50);
 
-        // بعد از اتمام انیمیشن پیام و رنگ چراغ رو تغییر بده
         setTimeout(() => {
           statusDiv.classList.add('online');
           text.textContent = 'آنلاین';
@@ -201,9 +244,24 @@
       }
     }
 
+    function updateClock() {
+      const now = new Date();
+      let h = now.getHours();
+      let m = now.getMinutes();
+
+      // افزودن صفر پیشوند به اعداد تک رقمی
+      h = h < 10 ? '0' + h : h;
+      m = m < 10 ? '0' + m : m;
+
+      document.getElementById('timeText').textContent = `${h}:${m}`;
+    }
+
     showSystemDates();
     setStatus(false);
     setTimeout(updateMiladiFromAPI, 2000);
+
+    // آپدیت ساعت هر نیم ثانیه
+    setInterval(updateClock, 500);
   </script>
 </body>
 </html>
