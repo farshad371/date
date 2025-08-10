@@ -25,7 +25,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             width: 80%;
-            max-width: 400px;
+            max-width: 420px;
         }
         h2 {
             margin-bottom: 15px;
@@ -60,9 +60,17 @@
             "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
             "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
         ];
+        const miladiMonthsEn = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
         const ghamariMonthsFa = [
             "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی", "جمادی‌الاول", "جمادی‌الثانی",
             "رجب", "شعبان", "رمضان", "شوال", "ذی‌القعده", "ذی‌الحجه"
+        ];
+        const ghamariMonthsAr = [
+            "ٱلْمُحَرَّم", "صَفَر", "رَبِيع ٱلْأَوَّل", "رَبِيع ٱلثَّانِي", "جُمَادَىٰ ٱلْأُولَىٰ", "جُمَادَىٰ ٱلْآخِرَة",
+            "رَجَب", "شَعْبَان", "رَمَضَان", "شَوَّال", "ذُو ٱلْقَعْدَة", "ذُو ٱلْحِجَّة"
         ];
 
         function getShamsiDate() {
@@ -74,10 +82,12 @@
         function getMiladiDate() {
             let today = new Date();
             let day = today.getDate();
-            let month = miladiMonthsFa[today.getMonth()];
+            let monthNum = today.getMonth() + 1;
+            let monthFa = miladiMonthsFa[today.getMonth()];
+            let monthEn = miladiMonthsEn[today.getMonth()];
             let year = today.getFullYear();
             let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(today);
-            return `${weekday} ${day} ${month} ${year}`;
+            return `${weekday} ${day} ${monthFa} (${monthNum} – ${monthEn}) ${year}`;
         }
 
         function getGhamariDate() {
@@ -86,8 +96,9 @@
             let monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(today), 10);
             let year = new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(today);
             let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(today);
-            let monthName = ghamariMonthsFa[monthNum - 1];
-            return `${weekday} ${day} ${monthName} ${year}`;
+            let monthFa = ghamariMonthsFa[monthNum - 1];
+            let monthAr = ghamariMonthsAr[monthNum - 1];
+            return `${weekday} ${day} ${monthFa} (${monthNum} – ${monthAr}) ${year}`;
         }
 
         document.getElementById("shamsi").innerText = getShamsiDate();
