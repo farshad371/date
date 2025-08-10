@@ -261,9 +261,25 @@
 
     // آپدیت ساعت هر نیم ثانیه
     setInterval(updateClock, 500);
+    function autoRefreshAtMidnight() {
+      const now = new Date();
+      const today = now.toDateString(); // رشته ای مثل "Sun Aug 10 2025"
+      const lastRefreshDay = localStorage.getItem('lastRefreshDay');
+
+      if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() <= 10) {
+        if (lastRefreshDay !== today) {
+        localStorage.setItem('lastRefreshDay', today);
+      location.reload();
+      }
+    }
+  }
+
+    setInterval(autoRefreshAtMidnight, 500);
+
   </script>
 </body>
 </html>
+
 
 
 
