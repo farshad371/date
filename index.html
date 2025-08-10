@@ -1,110 +1,188 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تاریخ امروز</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/farshad371/date/main/icon-192.png">
-    <style>
-        body {
-            font-family: 'Tahoma', sans-serif;
-            background: linear-gradient(135deg, #4b6cb7, #182848);
-            color: white;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .date-container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            width: 80%;
-            max-width: 420px;
-        }
-        h2 {
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        .date-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-        .shamsi { color: #ffeb3b; }
-        .miladi { color: #03dac6; }
-        .ghamari { color: #ff6f61; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تاریخ با آپدیت آنلاین</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: linear-gradient(135deg, #4b6cb7, #182848);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .date-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 420px;
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    .date-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .shamsi {
+      color: #ffeb3b;
+    }
+    .miladi {
+      color: #03dac6;
+    }
+    .ghamari {
+      color: #ff6f61;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+    }
+    .status .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: yellow;
+      animation: blink 1.2s infinite;
+    }
+    .status.online .dot {
+      background: #4caf50;
+      animation: none;
+    }
+    @keyframes blink {
+      0%, 100% {opacity: 1;}
+      50% {opacity: 0.3;}
+    }
+  </style>
 </head>
 <body>
-    <div class="date-container">
-        <h2>📅 تاریخ امروز</h2>
-        
-        <p class="date-title">🌞 شمسی</p>
-        <p id="shamsi" class="shamsi"></p>
+  <div class="date-container">
+    <h2>📅 تاریخ امروز</h2>
 
-        <p class="date-title">🌍 میلادی</p>
-        <p id="miladi" class="miladi"></p>
+    <p class="date-title">🌞 شمسی</p>
+    <p id="shamsi" class="shamsi">در حال بارگذاری...</p>
 
-        <p class="date-title">🌙 قمری</p>
-        <p id="ghamari" class="ghamari"></p>
+    <p class="date-title">🌍 میلادی</p>
+    <p id="miladi" class="miladi">در حال بارگذاری...</p>
+
+    <p class="date-title">🌙 قمری</p>
+    <p id="ghamari" class="ghamari">در حال بارگذاری...</p>
+
+    <div id="status" class="status">
+      <div class="dot"></div>
+      <span>در انتظار بروزرسانی آنلاین</span>
     </div>
+  </div>
 
-    <script>
-        const miladiMonthsFa = [
-            "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
-            "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
-        ];
-        const miladiMonthsEn = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-        const ghamariMonthsFa = [
-            "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی", "جمادی‌الاول", "جمادی‌الثانی",
-            "رجب", "شعبان", "رمضان", "شوال", "ذی‌القعده", "ذی‌الحجه"
-        ];
-        const ghamariMonthsAr = [
-            "ٱلْمُحَرَّم", "صَفَر", "رَبِيع ٱلْأَوَّل", "رَبِيع ٱلثَّانِي", "جُمَادَىٰ ٱلْأُولَىٰ", "جُمَادَىٰ ٱلْآخِرَة",
-            "رَجَب", "شَعْبَان", "رَمَضَان", "شَوَّال", "ذُو ٱلْقَعْدَة", "ذُو ٱلْحِجَّة"
-        ];
+  <script>
+    // ماه های میلادی فارسی و انگلیسی
+    const miladiMonthsFa = [
+      "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
+      "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
+    ];
+    const miladiMonthsEn = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    // ماه های قمری فارسی و عربی
+    const ghamariMonthsFa = [
+      "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی", "جمادی‌الاول", "جمادی‌الثانی",
+      "رجب", "شعبان", "رمضان", "شوال", "ذی‌القعده", "ذی‌الحجه"
+    ];
+    const ghamariMonthsAr = [
+      "ٱلْمُحَرَّم", "صَفَر", "رَبِيع ٱلْأَوَّل", "رَبِيع ٱلثَّانِي", "جُمَادَىٰ ٱلْأُولَىٰ", "جُمَادَىٰ ٱلْآخِرَة",
+      "رَجَب", "شَعْبَان", "رَمَضَان", "شَوَّال", "ذُو ٱلْقَعْدَة", "ذُو ٱلْحِجَّة"
+    ];
 
-        function getShamsiDate() {
-            let today = new Date();
-            let opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            return new Intl.DateTimeFormat('fa-IR', opts).format(today);
-        }
+    // تابع برای گرفتن تاریخ شمسی از سیستم
+    function getShamsiDate(date) {
+      const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      return new Intl.DateTimeFormat('fa-IR', opts).format(date);
+    }
 
-        function getMiladiDate() {
-            let today = new Date();
-            let day = today.getDate();
-            let monthNum = today.getMonth() + 1;
-            let monthFa = miladiMonthsFa[today.getMonth()];
-            let monthEn = miladiMonthsEn[today.getMonth()];
-            let year = today.getFullYear();
-            let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(today);
-            return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year}`;
-        }
+    // تابع برای گرفتن تاریخ میلادی از سیستم
+    function getMiladiDate(date) {
+      const day = date.getDate();
+      const monthNum = date.getMonth() + 1;
+      const monthFa = miladiMonthsFa[date.getMonth()];
+      const monthEn = miladiMonthsEn[date.getMonth()];
+      const year = date.getFullYear();
+      const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(date);
+      return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year}`;
+    }
 
-        function getGhamariDate() {
-            let today = new Date();
-            let day = new Intl.DateTimeFormat('ar-TN', { day: 'numeric', calendar: 'islamic-umalqura' }).format(today);
-            let monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(today), 10);
-            let year = new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(today);
-            let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(today);
-            let monthFa = ghamariMonthsFa[monthNum - 1];
-            let monthAr = ghamariMonthsAr[monthNum - 1];
-            return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
-        }
+    // تابع برای گرفتن تاریخ قمری از سیستم
+    function getGhamariDate(date) {
+      const day = new Intl.DateTimeFormat('ar-TN', { day: 'numeric', calendar: 'islamic-umalqura' }).format(date);
+      const monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(date), 10);
+      const year = new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(date);
+      const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(date);
+      const monthFa = ghamariMonthsFa[monthNum - 1];
+      const monthAr = ghamariMonthsAr[monthNum - 1];
+      return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
+    }
 
-        document.getElementById("shamsi").innerText = getShamsiDate();
-        document.getElementById("miladi").innerText = getMiladiDate();
-        document.getElementById("ghamari").innerText = getGhamariDate();
-    </script>
+    // تابع برای نمایش تاریخ از سیستم
+    function showSystemDates() {
+      const now = new Date();
+      document.getElementById('shamsi').textContent = getShamsiDate(now);
+      document.getElementById('miladi').textContent = getMiladiDate(now);
+      document.getElementById('ghamari').textContent = getGhamariDate(now);
+    }
+
+    // تابع برای به‌روزرسانی وضعیت پیام
+    function setStatus(isOnline) {
+      const statusDiv = document.getElementById('status');
+      const dot = statusDiv.querySelector('.dot');
+      const text = statusDiv.querySelector('span');
+      if (isOnline) {
+        statusDiv.classList.add('online');
+        text.textContent = 'آنلاین';
+      } else {
+        statusDiv.classList.remove('online');
+        text.textContent = 'در انتظار بروزرسانی آنلاین';
+      }
+    }
+
+    // تابع برای به‌روزرسانی تاریخ میلادی از API آنلاین
+    async function updateMiladiFromAPI() {
+      try {
+        const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Tehran');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        const dateTimeStr = data.datetime; // مثلا: "2025-08-10T11:33:01.123456+03:30"
+        const dateObj = new Date(dateTimeStr);
+        // به روز رسانی تاریخ میلادی
+        document.getElementById('miladi').textContent = getMiladiDate(dateObj);
+        setStatus(true);
+      } catch (error) {
+        // اگر خطا بود، وضعیت آفلاین بمونه
+        setStatus(false);
+        console.error('Error fetching online date:', error);
+      }
+    }
+
+    // اجرای اولیه: نمایش تاریخ سیستم
+    showSystemDates();
+    setStatus(false);
+    // درخواست بروزرسانی آنلاین بعد از چند ثانیه (مثلا 2 ثانیه)
+    setTimeout(updateMiladiFromAPI, 2000);
+  </script>
 </body>
 </html>
-
