@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>تاریخ با آپدیت آنلاین</title>
+  <title>تاریخ با آپدیت آنلاین و افکت</title>
   <style>
     body {
       font-family: Tahoma, sans-serif;
@@ -53,6 +53,9 @@
       align-items: center;
       gap: 8px;
       font-weight: bold;
+      position: relative;
+      height: 24px;
+      overflow: visible;
     }
     .status .dot {
       width: 12px;
@@ -60,6 +63,8 @@
       border-radius: 50%;
       background: yellow;
       animation: blink 1.2s infinite;
+      flex-shrink: 0;
+      transition: background 0.3s ease;
     }
     .status.online .dot {
       background: #4caf50;
@@ -68,6 +73,17 @@
     @keyframes blink {
       0%, 100% {opacity: 1;}
       50% {opacity: 0.3;}
+    }
+    /* نوار بارگذاری */
+    .loading-bar {
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      height: 4px;
+      background: #4caf50;
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.5s ease;
     }
   </style>
 </head>
@@ -87,6 +103,7 @@
     <div id="status" class="status">
       <div class="dot"></div>
       <span>در انتظار بروزرسانی آنلاین</span>
+      <div id="loadingBar" class="loading-bar"></div>
     </div>
   </div>
 
@@ -144,12 +161,29 @@
       const statusDiv = document.getElementById('status');
       const dot = statusDiv.querySelector('.dot');
       const text = statusDiv.querySelector('span');
+      const loadingBar = document.getElementById('loadingBar');
+
       if (isOnline) {
-        statusDiv.classList.add('online');
-        text.textContent = 'آنلاین';
+        // شروع انیمیشن نوار بارگذاری
+        loadingBar.style.width = '0%';
+        loadingBar.style.transition = 'width 1.5s ease';
+        // با تاخیر انیمیشن رو اجرا کن
+        setTimeout(() => {
+          loadingBar.style.width = '100%';
+        }, 50);
+
+        // بعد از اتمام انیمیشن پیام و رنگ چراغ رو تغییر بده
+        setTimeout(() => {
+          statusDiv.classList.add('online');
+          text.textContent = 'آنلاین';
+          loadingBar.style.width = '0%';
+          loadingBar.style.transition = 'none';
+        }, 1600);
       } else {
         statusDiv.classList.remove('online');
         text.textContent = 'در انتظار بروزرسانی آنلاین';
+        loadingBar.style.width = '0%';
+        loadingBar.style.transition = 'none';
       }
     }
 
