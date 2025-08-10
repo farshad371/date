@@ -91,7 +91,6 @@
   </div>
 
   <script>
-    // ماه های میلادی فارسی و انگلیسی
     const miladiMonthsFa = [
       "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
       "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"
@@ -100,7 +99,6 @@
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
     ];
-    // ماه های قمری فارسی و عربی
     const ghamariMonthsFa = [
       "محرم", "صفر", "ربیع‌الاول", "ربیع‌الثانی", "جمادی‌الاول", "جمادی‌الثانی",
       "رجب", "شعبان", "رمضان", "شوال", "ذی‌القعده", "ذی‌الحجه"
@@ -110,13 +108,11 @@
       "رَجَب", "شَعْبَان", "رَمَضَان", "شَوَّال", "ذُو ٱلْقَعْدَة", "ذُو ٱلْحِجَّة"
     ];
 
-    // تابع برای گرفتن تاریخ شمسی از سیستم
     function getShamsiDate(date) {
       const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
       return new Intl.DateTimeFormat('fa-IR', opts).format(date);
     }
 
-    // تابع برای گرفتن تاریخ میلادی از سیستم
     function getMiladiDate(date) {
       const day = date.getDate();
       const monthNum = date.getMonth() + 1;
@@ -127,7 +123,6 @@
       return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year}`;
     }
 
-    // تابع برای گرفتن تاریخ قمری از سیستم
     function getGhamariDate(date) {
       const day = new Intl.DateTimeFormat('ar-TN', { day: 'numeric', calendar: 'islamic-umalqura' }).format(date);
       const monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(date), 10);
@@ -138,7 +133,6 @@
       return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
     }
 
-    // تابع برای نمایش تاریخ از سیستم
     function showSystemDates() {
       const now = new Date();
       document.getElementById('shamsi').textContent = getShamsiDate(now);
@@ -146,7 +140,6 @@
       document.getElementById('ghamari').textContent = getGhamariDate(now);
     }
 
-    // تابع برای به‌روزرسانی وضعیت پیام
     function setStatus(isOnline) {
       const statusDiv = document.getElementById('status');
       const dot = statusDiv.querySelector('.dot');
@@ -160,28 +153,22 @@
       }
     }
 
-    // تابع برای به‌روزرسانی تاریخ میلادی از API آنلاین
     async function updateMiladiFromAPI() {
       try {
-        const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Tehran');
+        const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Tehran');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        const dateTimeStr = data.datetime; // مثلا: "2025-08-10T11:33:01.123456+03:30"
-        const dateObj = new Date(dateTimeStr);
-        // به روز رسانی تاریخ میلادی
+        const dateObj = new Date(data.dateTime || data.datetime);
         document.getElementById('miladi').textContent = getMiladiDate(dateObj);
         setStatus(true);
       } catch (error) {
-        // اگر خطا بود، وضعیت آفلاین بمونه
         setStatus(false);
         console.error('Error fetching online date:', error);
       }
     }
 
-    // اجرای اولیه: نمایش تاریخ سیستم
     showSystemDates();
     setStatus(false);
-    // درخواست بروزرسانی آنلاین بعد از چند ثانیه (مثلا 2 ثانیه)
     setTimeout(updateMiladiFromAPI, 2000);
   </script>
 </body>
