@@ -87,7 +87,7 @@
             let monthEn = miladiMonthsEn[today.getMonth()];
             let year = today.getFullYear();
             let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(today);
-            return `${weekday} ${day} ${monthFa} (${monthNum} – ${monthEn}) ${year}`;
+            return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year}`;
         }
 
         function getGhamariDate() {
@@ -98,7 +98,7 @@
             let weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(today);
             let monthFa = ghamariMonthsFa[monthNum - 1];
             let monthAr = ghamariMonthsAr[monthNum - 1];
-            return `${weekday} ${day} ${monthFa} (${monthNum} – ${monthAr}) ${year}`;
+            return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
         }
 
         document.getElementById("shamsi").innerText = getShamsiDate();
@@ -107,3 +107,4 @@
     </script>
 </body>
 </html>
+
