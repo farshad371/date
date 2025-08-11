@@ -303,6 +303,11 @@ function progressShamsi(date) {
   return (dayOfYear / totalDays) * 100;
 }
 function progressGhamari(date) {
+  if (typeof moment().iYear !== 'function') {
+    console.error('moment-hijri is not loaded!');
+    return 0;
+  }
+
   const m = moment(date);
 
   const hijriYear = m.iYear();
@@ -310,7 +315,7 @@ function progressGhamari(date) {
   const hijriDay = m.iDate();
 
   let dayOfYear = hijriDay;
-  for(let i=0; i < hijriMonth; i++) {
+  for(let i = 0; i < hijriMonth; i++) {
     dayOfYear += moment().iYear(hijriYear).iMonth(i).iDaysInMonth();
   }
   const totalDays = moment().iYear(hijriYear).iDaysInYear();
@@ -408,4 +413,5 @@ setInterval(updateProgressBars, 60 * 60 * 1000); // هر ساعت آپدیت ش�
   </script>
 </body>
 </html>
+
 
