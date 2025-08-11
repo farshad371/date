@@ -278,7 +278,8 @@
   </script>
 </body>
 </html>
-<div id="progressBarsContainer" style="max-width: 420px; width: 90%; margin: 20px auto; padding: 10px 0; border-radius: 12px;">
+<!-- نوارهای پرشونده هماهنگ با کادر تاریخ -->
+<div id="progressBarsContainer">
   <div class="progress-bar-bg">
     <div class="progress-bar-fill" id="progressShamsi"></div>
   </div>
@@ -291,20 +292,25 @@
 </div>
 
 <style>
+  /* هماهنگ با استایل .date-container */
   #progressBarsContainer {
-  background: rgba(255 255 255 / 0.1);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
-  padding: 20px; /* اضافه شد */
-}
-.progress-bar-bg {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
-  height: 16px;
-  margin: 14px 0; /* فقط فاصله عمودی */
-  overflow: hidden;
-}
-
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 420px;
+    box-sizing: border-box;
+    margin: 20px auto;
+  }
+  .progress-bar-bg {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    height: 16px;
+    margin: 14px 0;
+    overflow: hidden;
+  }
   .progress-bar-fill {
     height: 100%;
     width: 0%;
@@ -312,18 +318,17 @@
     transition: width 2s ease-in-out;
   }
   #progressShamsi {
-    background-color: #ffeb3b; /* زرد شمسی */
+    background-color: #ffeb3b;
   }
   #progressMiladi {
-    background-color: #03dac6; /* فیروزه ای میلادی */
+    background-color: #03dac6;
   }
   #progressGhamari {
-    background-color: #ff6f61; /* نارنجی قمری */
+    background-color: #ff6f61;
   }
 </style>
 
 <script>
-  // همان توابع قبلی محاسبه درصدها
   function getShamsiYearProgress() {
     const today = new Date();
     const start = new Date(today.getFullYear(), 2, 21);
@@ -372,6 +377,7 @@
 
   animateProgressBars();
 </script>
+
 
 
 
