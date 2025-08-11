@@ -292,11 +292,12 @@
 </div>
 
 <style>
+  /* تنظیمات دقیق عرض و وسط چین */
   #progressBarsContainer {
     width: 90%;
     max-width: 420px;
     padding: 20px;
-    margin: 20px auto;
+    margin: 20px auto; /* فقط فاصله عمودی و وسط چین افقی */
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -331,11 +332,12 @@
 <script>
   function getShamsiYearProgress() {
     const today = new Date();
-    const start = new Date(today.getFullYear(), 2, 21); // 21 مارس = شروع سال شمسی
+    const start = new Date(today.getFullYear(), 2, 21); // 21 مارس (شروع سال شمسی)
     const end = new Date(today.getFullYear() + 1, 2, 20);
     const progress = (today - start) / (end - start);
     return Math.min(Math.max(progress, 0), 1) * 100;
   }
+
   function getMiladiYearProgress() {
     const today = new Date();
     const start = new Date(today.getFullYear(), 0, 1);
@@ -343,6 +345,7 @@
     const progress = (today - start) / (end - start);
     return Math.min(Math.max(progress, 0), 1) * 100;
   }
+
   function getGhamariYearProgress() {
     const today = new Date();
     const islamicCalendar = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {year: 'numeric'});
@@ -364,7 +367,6 @@
     const miladiPercent = getMiladiYearProgress();
     const ghamariPercent = getGhamariYearProgress();
 
-    // ریست عرض نوارها
     document.getElementById('progressShamsi').style.width = '0%';
     document.getElementById('progressMiladi').style.width = '0%';
     document.getElementById('progressGhamari').style.width = '0%';
@@ -378,3 +380,4 @@
 
   animateProgressBars();
 </script>
+
