@@ -278,54 +278,105 @@
   </script>
 </body>
 </html>
-<!-- این بخش رو کنار بقیه صفحه قرار بده -->
-<div id="progressBarsContainer" style="max-width:420px; margin: 20px auto; padding: 10px; background: rgba(255 255 255 / 0.1); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-  <div style="margin-bottom: 12px;">
-    <div style="font-weight: bold; color: #ffeb3b;">🌞 درصد سال شمسی</div>
-    <div class="progress-bar" id="progressShamsi"></div>
-  </div>
-  <div style="margin-bottom: 12px;">
-    <div style="font-weight: bold; color: #03dac6;">🌍 درصد سال میلادی</div>
-    <div class="progress-bar" id="progressMiladi"></div>
-  </div>
-  <div>
-    <div style="font-weight: bold; color: #ff6f61;">🌙 درصد سال قمری</div>
-    <div class="progress-bar" id="progressGhamari"></div>
-  </div>
+<!-- نوارهای پرشونده رنگی، هم عرض کادر 420px -->
+<div id="progressBarsContainer" style="max-width: 420px; width: 90%; margin: 20px auto; padding: 10px 0; border-radius: 12px;">
+  <div class="progress-bar" id="progressShamsi"></div>
+  <div class="progress-bar" id="progressMiladi"></div>
+  <div class="progress-bar" id="progressGhamari"></div>
 </div>
 
 <style>
+  #progressBarsContainer {
+    background: rgba(255 255 255 / 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+  }
   .progress-bar {
-    width: 0;
-    height: 18px;
-    border-radius: 10px;
-    background-color: gray;
+    width: 0%;
+    height: 16px;
+    border-radius: 8px;
+    margin: 10px 0;
     transition: width 2s ease-in-out;
   }
   #progressShamsi {
-    background-color: #ffeb3b;
+    background-color: #ffeb3b; /* زرد شمسی */
   }
   #progressMiladi {
-    background-color: #03dac6;
+    background-color: #03dac6; /* فیروزه ای میلادی */
   }
   #progressGhamari {
-    background-color: #ff6f61;
+    background-color: #ff6f61; /* نارنجی قمری */
   }
 </style>
 
 <script>
-  // این تابع نوارها رو پر میکنه؛ درصدها عددی بین 0 تا 100 هستن
-  function animateProgressBars(shamsiPercent, miladiPercent, ghamariPercent) {
+  // محاسبه درصد پیشرفت سال شمسی
+  function getShamsiYearProgress() {
+    const today = new Date();
+    // شمسی از اول فروردین تا 29/30 اسفند
+    // برای ساده سازی، از تاریخ شمسی استفاده از جاوااسکریپت استاندارد امکان نداره
+    // پس استفاده میکنیم از Intl.DateTimeFormat و تبدیل به میلادی برای اول و آخر سال شمسی
+    // اما به طور تقریبی، اول فروردین برابر با 21 مارس میلادی هست
+    // این تقریب برای اکثر سال‌ها درست است
+    const start = new Date(today.getFullYear(), 2, 21); // 21 March
+    const end = new Date(today.getFullYear() + 1, 2, 20); // 20 March سال بعد
+    const progress = (today - start) / (end - start);
+    return Math.min(Math.max(progress, 0), 1) * 100;
+  }
+
+  // محاسبه درصد پیشرفت سال میلادی
+  function getMiladiYearProgress() {
+    const today = new Date();
+    const start = new Date(today.getFullYear(), 0, 1);
+    const end = new Date(today.getFullYear() + 1, 0, 1);
+    const progress = (today - start) / (end - start);
+    return Math.min(Math.max(progress, 0), 1) * 100;
+  }
+
+  // محاسبه درصد پیشرفت سال قمری
+  function getGhamariYearProgress() {
+    const today = new Date();
+
+    // سال قمری تقریبا 354 روزه هست، تاریخ قمری محاسبه دقیق نیاز به کتابخانه داره
+    // اینجا با تقریب زمان بین اول محرم تا اول محرم سال بعد رو می‌گیریم
+    const islamicCalendar = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {year: 'numeric'});
+    const currentYear = parseInt(islamicCalendar.format(today));
+
+    // تبدیل ابتدای سال قمری به میلادی
+    function islamicToGregorian(year) {
+      // تقریب:
+      // محرم 1 سال جاری قمری معادل حدودی برابر:
+      // 20 سال * 354.367 روز ~ استفاده از این برای تقریب در اینجا پیچیده است
+      // برای این مثال ساده، از یک تاریخ ثابت استفاده میکنیم (اول محرم 1446 = 2024-07-17)
+      // این تقریبی است فقط برای نمایش!
+      if(year === 1446) return new Date(2024, 6, 17);
+      if(year === 1447) return new Date(2025, 6, 7);
+      if(year === 1448) return new Date(2026, 5, 27);
+      return new Date(2024, 6, 17);
+    }
+
+    const start = islamicToGregorian(currentYear);
+    const end = islamicToGregorian(currentYear + 1);
+
+    const progress = (today - start) / (end - start);
+    return Math.min(Math.max(progress, 0), 1) * 100;
+  }
+
+  function animateProgressBars() {
+    const shamsiPercent = getShamsiYearProgress();
+    const miladiPercent = getMiladiYearProgress();
+    const ghamariPercent = getGhamariYearProgress();
+
     const barShamsi = document.getElementById('progressShamsi');
     const barMiladi = document.getElementById('progressMiladi');
     const barGhamari = document.getElementById('progressGhamari');
 
-    // ابتدا عرض نوارها صفر باشه (میتونی این خط رو حذف کنی اگر نیاز نیست ریست بشه)
+    // اول عرض نوارها صفر باشه
     barShamsi.style.width = '0%';
     barMiladi.style.width = '0%';
     barGhamari.style.width = '0%';
 
-    // بعد 1 ثانیه انیمیشن پر شدن شروع بشه
+    // بعد از 1 ثانیه انیمیشن پر شدن شروع بشه
     setTimeout(() => {
       barShamsi.style.width = shamsiPercent + '%';
       barMiladi.style.width = miladiPercent + '%';
@@ -333,8 +384,11 @@
     }, 1000);
   }
 
-  // مثال استفاده مستقل (مثلا بعد از چراغ آنلاین سبز شدن)
-  // animateProgressBars(60, 80, 50);
+  // فرض میکنیم چراغ آنلاین سبز شده، مستقیم انیمیشن رو اجرا میکنیم
+  animateProgressBars();
+
+  // اگر میخوای بعدا با چراغ آنلاین سبز شدن هماهنگش کنی، 
+  // فقط کافیه تابع animateProgressBars رو در جای مناسب فراخوانی کنی.
 </script>
 
 
