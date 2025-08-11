@@ -182,7 +182,7 @@
       const monthEn = miladiMonthsEn[date.getMonth()];
       const year = date.getFullYear();
       const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(date);
-      return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year};
+      return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year}`;
     }
 
     function getGhamariDate(date) {
@@ -192,7 +192,7 @@
       const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(date);
       const monthFa = ghamariMonthsFa[monthNum - 1];
       const monthAr = ghamariMonthsAr[monthNum - 1];
-      return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year};
+      return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
     }
 
     function showSystemDates() {
@@ -279,3 +279,4 @@
   </script>
 </body>
 </html>
+
