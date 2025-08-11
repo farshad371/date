@@ -278,7 +278,7 @@
   </script>
 </body>
 </html>
-<!-- نوارهای پرشونده هماهنگ با کادر تاریخ -->
+<!-- کادر دوم: نوارهای پیشرفت سال -->
 <div id="progressBarsContainer">
   <div class="progress-bar-bg">
     <div class="progress-bar-fill" id="progressShamsi"></div>
@@ -292,23 +292,22 @@
 </div>
 
 <style>
-  /* هماهنگ با استایل .date-container */
   #progressBarsContainer {
-    background: rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 420px;
     padding: 20px;
+    margin: 20px auto;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
-    width: 90%;
-    max-width: 420px;
-    box-sizing: border-box;
-    margin: 20px auto;
   }
   .progress-bar-bg {
     background-color: rgba(255, 255, 255, 0.25);
     border-radius: 8px;
     height: 16px;
-    margin: 14px 0;
+    margin: 8px 0;
     overflow: hidden;
   }
   .progress-bar-fill {
@@ -316,6 +315,7 @@
     width: 0%;
     border-radius: 8px;
     transition: width 2s ease-in-out;
+    display: block;
   }
   #progressShamsi {
     background-color: #ffeb3b;
@@ -331,7 +331,7 @@
 <script>
   function getShamsiYearProgress() {
     const today = new Date();
-    const start = new Date(today.getFullYear(), 2, 21);
+    const start = new Date(today.getFullYear(), 2, 21); // 21 مارس = شروع سال شمسی
     const end = new Date(today.getFullYear() + 1, 2, 20);
     const progress = (today - start) / (end - start);
     return Math.min(Math.max(progress, 0), 1) * 100;
@@ -364,6 +364,7 @@
     const miladiPercent = getMiladiYearProgress();
     const ghamariPercent = getGhamariYearProgress();
 
+    // ریست عرض نوارها
     document.getElementById('progressShamsi').style.width = '0%';
     document.getElementById('progressMiladi').style.width = '0%';
     document.getElementById('progressGhamari').style.width = '0%';
@@ -377,10 +378,3 @@
 
   animateProgressBars();
 </script>
-
-
-
-
-
-
-
