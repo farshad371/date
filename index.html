@@ -278,6 +278,65 @@
   </script>
 </body>
 </html>
+<!-- این بخش رو کنار بقیه صفحه قرار بده -->
+<div id="progressBarsContainer" style="max-width:420px; margin: 20px auto; padding: 10px; background: rgba(255 255 255 / 0.1); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+  <div style="margin-bottom: 12px;">
+    <div style="font-weight: bold; color: #ffeb3b;">🌞 درصد سال شمسی</div>
+    <div class="progress-bar" id="progressShamsi"></div>
+  </div>
+  <div style="margin-bottom: 12px;">
+    <div style="font-weight: bold; color: #03dac6;">🌍 درصد سال میلادی</div>
+    <div class="progress-bar" id="progressMiladi"></div>
+  </div>
+  <div>
+    <div style="font-weight: bold; color: #ff6f61;">🌙 درصد سال قمری</div>
+    <div class="progress-bar" id="progressGhamari"></div>
+  </div>
+</div>
+
+<style>
+  .progress-bar {
+    width: 0;
+    height: 18px;
+    border-radius: 10px;
+    background-color: gray;
+    transition: width 2s ease-in-out;
+  }
+  #progressShamsi {
+    background-color: #ffeb3b;
+  }
+  #progressMiladi {
+    background-color: #03dac6;
+  }
+  #progressGhamari {
+    background-color: #ff6f61;
+  }
+</style>
+
+<script>
+  // این تابع نوارها رو پر میکنه؛ درصدها عددی بین 0 تا 100 هستن
+  function animateProgressBars(shamsiPercent, miladiPercent, ghamariPercent) {
+    const barShamsi = document.getElementById('progressShamsi');
+    const barMiladi = document.getElementById('progressMiladi');
+    const barGhamari = document.getElementById('progressGhamari');
+
+    // ابتدا عرض نوارها صفر باشه (میتونی این خط رو حذف کنی اگر نیاز نیست ریست بشه)
+    barShamsi.style.width = '0%';
+    barMiladi.style.width = '0%';
+    barGhamari.style.width = '0%';
+
+    // بعد 1 ثانیه انیمیشن پر شدن شروع بشه
+    setTimeout(() => {
+      barShamsi.style.width = shamsiPercent + '%';
+      barMiladi.style.width = miladiPercent + '%';
+      barGhamari.style.width = ghamariPercent + '%';
+    }, 1000);
+  }
+
+  // مثال استفاده مستقل (مثلا بعد از چراغ آنلاین سبز شدن)
+  // animateProgressBars(60, 80, 50);
+</script>
+
 
 
 
