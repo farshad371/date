@@ -37,15 +37,34 @@
       font-weight: bold;
       margin-top: 15px;
     }
-    .shamsi {
-      color: #ffeb3b;
+
+    /* رنگ متن */
+    .shamsi { color: #ffeb3b; }
+    .miladi { color: #03dac6; }
+    .ghamari { color: #ff6f61; }
+
+    /* نوار پس‌زمینه شیشه‌ای پرشونده */
+    .date-progress {
+      position: relative;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 1;
     }
-    .miladi {
-      color: #03dac6;
+    .date-progress::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 0%;
+      opacity: 0.25;
+      border-radius: 10px;
+      background-color: currentColor; /* همرنگ متن */
+      transition: width 2s ease;
+      z-index: -1;
     }
-    .ghamari {
-      color: #ff6f61;
-    }
+
     .status {
       margin-top: 20px;
       font-size: 16px;
@@ -94,7 +113,7 @@
       right: 20px;
       font-size: 22px;
       font-weight: 700;
-      color: #0ff; /* رنگ نئونی آبی-آبی فیروزه‌ای */
+      color: #0ff;
       text-shadow:
         0 0 2px #0ff99,
         0 0 5px #0ff77,
@@ -120,7 +139,6 @@
       border-radius: 50%;
       animation: spin 15s steps(60) infinite;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg);}
       100% { transform: rotate(360deg);}
@@ -137,13 +155,13 @@
     <h2>📅 تاریخ امروز</h2>
 
     <p class="date-title">🌞 شمسی</p>
-    <p id="shamsi" class="shamsi">در حال بارگذاری...</p>
+    <p id="shamsi" class="shamsi date-progress">در حال بارگذاری...</p>
 
     <p class="date-title">🌍 میلادی</p>
-    <p id="miladi" class="miladi">در حال بارگذاری...</p>
+    <p id="miladi" class="miladi date-progress">در حال بارگذاری...</p>
 
     <p class="date-title">🌙 قمری</p>
-    <p id="ghamari" class="ghamari">در حال بارگذاری...</p>
+    <p id="ghamari" class="ghamari date-progress">در حال بارگذاری...</p>
 
     <div id="status" class="status">
       <div class="dot"></div>
@@ -195,6 +213,29 @@
       return `${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year}`;
     }
 
+    function getYearProgress(date, calendar) {
+      if(calendar === 'gregorian') {
+        const start = new Date(date.getFullYear(), 0, 1);
+        const end = new Date(date.getFullYear() + 1, 0, 1);
+        return ((date - start) / (end - start)) * 100;
+      } else if(calendar === 'persian') {
+        // محاسبه تقریبی سال شمسی (شروع: 21 مارس)
+        const year = parseInt(new Intl.DateTimeFormat('fa-IR', { year: 'numeric' }).format(date), 10);
+        const start = new Date(year - 621, 2, 21); // 21 March
+        const end = new Date(year - 621 + 1, 2, 21);
+        return ((date - start) / (end - start)) * 100;
+      } else if(calendar === 'islamic') {
+        // سال هجری قمری - تقریباً 354 روز
+        const hijriYear = parseInt(new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(date), 10);
+        const start = new Date(date);
+        start.setFullYear(date.getFullYear() - 1); // تقریباً سال قبل
+        const end = new Date(start);
+        end.setFullYear(start.getFullYear() + 1);
+        return ((date - start) / (end - start)) * 100;
+      }
+      return 0;
+    }
+
     function showSystemDates() {
       const now = new Date();
       document.getElementById('shamsi').textContent = getShamsiDate(now);
@@ -220,12 +261,48 @@
           text.textContent = 'آنلاین';
           loadingBar.style.width = '0%';
           loadingBar.style.transition = 'none';
+
+          // انیمیشن پر شدن نوار پس‌زمینه تاریخ‌ها با تاخیر 1 ثانیه
+          setTimeout(() => {
+            const now = new Date();
+
+            // شمسی
+            const shamsi = document.getElementById('shamsi');
+            const shamsiPercent = getYearProgress(now, 'persian');
+            shamsi.style.setProperty('transition', 'width 2s ease');
+            shamsi.style.setProperty('width', shamsiPercent + '%');
+            shamsi.style.setProperty('--progress', shamsiPercent + '%');
+
+            // میلادی
+            const miladi = document.getElementById('miladi');
+            const miladiPercent = getYearProgress(now, 'gregorian');
+            miladi.style.setProperty('transition', 'width 2s ease');
+            miladi.style.setProperty('width', miladiPercent + '%');
+            miladi.style.setProperty('--progress', miladiPercent + '%');
+
+            // قمری
+            const ghamari = document.getElementById('ghamari');
+            const ghamariPercent = getYearProgress(now, 'islamic');
+            ghamari.style.setProperty('transition', 'width 2s ease');
+            ghamari.style.setProperty('width', ghamariPercent + '%');
+            ghamari.style.setProperty('--progress', ghamariPercent + '%');
+
+          }, 1000);
+
         }, 1600);
       } else {
         statusDiv.classList.remove('online');
         text.textContent = 'در انتظار بروزرسانی آنلاین';
         loadingBar.style.width = '0%';
         loadingBar.style.transition = 'none';
+
+        // بازنشانی نوارها به صفر
+        ['shamsi', 'miladi', 'ghamari'].forEach(id => {
+          const el = document.getElementById(id);
+          el.style.setProperty('width', '0%');
+          el.style.setProperty('--progress', '0%');
+          el.style.transition = 'none';
+        });
       }
     }
 
@@ -248,7 +325,6 @@
       let h = now.getHours();
       let m = now.getMinutes();
 
-      // افزودن صفر پیشوند به اعداد تک رقمی
       h = h < 10 ? '0' + h : h;
       m = m < 10 ? '0' + m : m;
 
@@ -259,27 +335,22 @@
     setStatus(false);
     setTimeout(updateMiladiFromAPI, 2000);
 
-    // آپدیت ساعت هر نیم ثانیه
     setInterval(updateClock, 500);
+
     function autoRefreshAtMidnight() {
       const now = new Date();
-      const today = now.toDateString(); // رشته ای مثل "Sun Aug 10 2025"
+      const today = now.toDateString();
       const lastRefreshDay = localStorage.getItem('lastRefreshDay');
 
       if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() <= 10) {
         if (lastRefreshDay !== today) {
-        localStorage.setItem('lastRefreshDay', today);
-      location.reload();
+          localStorage.setItem('lastRefreshDay', today);
+          location.reload();
+        }
       }
     }
-  }
 
     setInterval(autoRefreshAtMidnight, 500);
-
   </script>
 </body>
 </html>
-
-
-
-
