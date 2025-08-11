@@ -19,7 +19,7 @@
       align-items: center;
       position: relative;
     }
-    .date-container {
+    .date-container, #progressBarsContainer {
       background: rgba(255, 255, 255, 0.1);
       padding: 20px;
       border-radius: 12px;
@@ -27,6 +27,8 @@
       backdrop-filter: blur(10px);
       width: 90%;
       max-width: 420px;
+      box-sizing: border-box;
+      margin: 20px auto;
     }
     h2 {
       margin-bottom: 15px;
@@ -75,7 +77,6 @@
       0%, 100% {opacity: 1;}
       50% {opacity: 0.3;}
     }
-    /* نوار بارگذاری */
     .loading-bar {
       position: absolute;
       bottom: -8px;
@@ -86,15 +87,13 @@
       width: 0;
       transition: width 1.5s ease;
     }
-
-    /* ساعت نئونی گوشه بالا راست */
     #digitalClock {
       position: fixed;
       top: 15px;
       right: 20px;
       font-size: 22px;
       font-weight: 700;
-      color: #0ff; /* رنگ نئونی آبی-آبی فیروزه‌ای */
+      color: #0ff;
       text-shadow:
         0 0 2px #0ff99,
         0 0 5px #0ff77,
@@ -110,8 +109,6 @@
       border-radius: 10px;
       backdrop-filter: blur(6px);
     }
-
-    /* انیمیشن چرخش دایره ثانیه */
     #secondSpinner {
       width: 16px;
       height: 16px;
@@ -120,10 +117,31 @@
       border-radius: 50%;
       animation: spin 15s steps(60) infinite;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg);}
       100% { transform: rotate(360deg);}
+    }
+    .progress-bar-bg {
+      background-color: rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      height: 16px;
+      margin: 14px 0;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 8px;
+      transition: width 2s ease-in-out;
+    }
+    #progressShamsi {
+      background-color: #ffeb3b;
+    }
+    #progressMiladi {
+      background-color: #03dac6;
+    }
+    #progressGhamari {
+      background-color: #ff6f61;
     }
   </style>
 </head>
@@ -135,20 +153,28 @@
 
   <div class="date-container">
     <h2>📅 تاریخ امروز</h2>
-
     <p class="date-title">🌞 شمسی</p>
     <p id="shamsi" class="shamsi">در حال بارگذاری...</p>
-
     <p class="date-title">🌍 میلادی</p>
     <p id="miladi" class="miladi">در حال بارگذاری...</p>
-
     <p class="date-title">🌙 قمری</p>
     <p id="ghamari" class="ghamari">در حال بارگذاری...</p>
-
     <div id="status" class="status">
       <div class="dot"></div>
       <span>در انتظار بروزرسانی آنلاین</span>
       <div id="loadingBar" class="loading-bar"></div>
+    </div>
+  </div>
+
+  <div id="progressBarsContainer">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressShamsi"></div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressMiladi"></div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressGhamari"></div>
     </div>
   </div>
 
@@ -248,138 +274,80 @@
       let h = now.getHours();
       let m = now.getMinutes();
 
-      // افزودن صفر پیشوند به اعداد تک رقمی
       h = h < 10 ? '0' + h : h;
       m = m < 10 ? '0' + m : m;
 
       document.getElementById('timeText').textContent = `${h}:${m}`;
     }
+
+    function getShamsiYearProgress() {
+      const today = new Date();
+      const start = new Date(today.getFullYear(), 2, 21);
+      const end = new Date(today.getFullYear() + 1, 2, 20);
+      const progress = (today - start) / (end - start);
+      return Math.min(Math.max(progress, 0), 1) * 100;
+    }
+
+    function getMiladiYearProgress() {
+      const today = new Date();
+      const start = new Date(today.getFullYear(), 0, 1);
+      const end = new Date(today.getFullYear() + 1, 0, 1);
+      const progress = (today - start) / (end - start);
+      return Math.min(Math.max(progress, 0), 1) * 100;
+    }
+
+    function getGhamariYearProgress() {
+      const today = new Date();
+      const islamicCalendar = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {year: 'numeric'});
+      const currentYear = parseInt(islamicCalendar.format(today));
+      function islamicToGregorian(year) {
+        if(year === 1446) return new Date(2024, 6, 17);
+        if(year === 1447) return new Date(2025, 6, 7);
+        if(year === 1448) return new Date(2026, 5, 27);
+        return new Date(2024, 6, 17);
+      }
+      const start = islamicToGregorian(currentYear);
+      const end = islamicToGregorian(currentYear + 1);
+      const progress = (today - start) / (end - start);
+      return Math.min(Math.max(progress, 0), 1) * 100;
+    }
+
+    function animateProgressBars() {
+      const shamsiPercent = getShamsiYearProgress();
+      const miladiPercent = getMiladiYearProgress();
+      const ghamariPercent = getGhamariYearProgress();
+
+      document.getElementById('progressShamsi').style.width = '0%';
+      document.getElementById('progressMiladi').style.width = '0%';
+      document.getElementById('progressGhamari').style.width = '0%';
+
+      setTimeout(() => {
+        document.getElementById('progressShamsi').style.width = shamsiPercent + '%';
+        document.getElementById('progressMiladi').style.width = miladiPercent + '%';
+        document.getElementById('progressGhamari').style.width = ghamariPercent + '%';
+      }, 1000);
+    }
+
     showSystemDates();
     setStatus(false);
     setTimeout(updateMiladiFromAPI, 2000);
-
-    // آپدیت ساعت هر نیم ثانیه
     setInterval(updateClock, 500);
+
     function autoRefreshAtMidnight() {
       const now = new Date();
-      const today = now.toDateString(); // رشته ای مثل "Sun Aug 10 2025"
+      const today = now.toDateString();
       const lastRefreshDay = localStorage.getItem('lastRefreshDay');
 
       if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() <= 10) {
         if (lastRefreshDay !== today) {
-        localStorage.setItem('lastRefreshDay', today);
-      location.reload();
+          localStorage.setItem('lastRefreshDay', today);
+          location.reload();
+        }
       }
     }
-  }
 
     setInterval(autoRefreshAtMidnight, 500);
-
+    animateProgressBars();
   </script>
 </body>
 </html>
-<!-- نوارهای پرشونده هماهنگ با کادر تاریخ -->
-<div id="progressBarsContainer">
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressShamsi"></div>
-  </div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressMiladi"></div>
-  </div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressGhamari"></div>
-  </div>
-</div>
-
-<style>
-  /* هماهنگ با استایل .date-container */
-  #progressBarsContainer {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    width: 90%;
-    max-width: 420px;
-    box-sizing: border-box;
-    margin: 20px auto;
-  }
-  .progress-bar-bg {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 8px;
-    height: 16px;
-    margin: 14px 0;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 8px;
-    transition: width 2s ease-in-out;
-  }
-  #progressShamsi {
-    background-color: #ffeb3b;
-  }
-  #progressMiladi {
-    background-color: #03dac6;
-  }
-  #progressGhamari {
-    background-color: #ff6f61;
-  }
-</style>
-
-<script>
-  function getShamsiYearProgress() {
-    const today = new Date();
-    const start = new Date(today.getFullYear(), 2, 21);
-    const end = new Date(today.getFullYear() + 1, 2, 20);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
-  function getMiladiYearProgress() {
-    const today = new Date();
-    const start = new Date(today.getFullYear(), 0, 1);
-    const end = new Date(today.getFullYear() + 1, 0, 1);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
-  function getGhamariYearProgress() {
-    const today = new Date();
-    const islamicCalendar = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {year: 'numeric'});
-    const currentYear = parseInt(islamicCalendar.format(today));
-    function islamicToGregorian(year) {
-      if(year === 1446) return new Date(2024, 6, 17);
-      if(year === 1447) return new Date(2025, 6, 7);
-      if(year === 1448) return new Date(2026, 5, 27);
-      return new Date(2024, 6, 17);
-    }
-    const start = islamicToGregorian(currentYear);
-    const end = islamicToGregorian(currentYear + 1);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
-
-  function animateProgressBars() {
-    const shamsiPercent = getShamsiYearProgress();
-    const miladiPercent = getMiladiYearProgress();
-    const ghamariPercent = getGhamariYearProgress();
-
-    document.getElementById('progressShamsi').style.width = '0%';
-    document.getElementById('progressMiladi').style.width = '0%';
-    document.getElementById('progressGhamari').style.width = '0%';
-
-    setTimeout(() => {
-      document.getElementById('progressShamsi').style.width = shamsiPercent + '%';
-      document.getElementById('progressMiladi').style.width = miladiPercent + '%';
-      document.getElementById('progressGhamari').style.width = ghamariPercent + '%';
-    }, 1000);
-  }
-
-  animateProgressBars();
-</script>
-
-
-
-
-
-
