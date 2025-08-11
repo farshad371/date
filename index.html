@@ -303,22 +303,18 @@ function progressShamsi(date) {
   return (dayOfYear / totalDays) * 100;
 }
 function progressGhamari(date) {
-  if (typeof moment().iYear !== 'function') {
-    console.error('moment-hijri is not loaded!');
-    return 0;
-  }
-
   const m = moment(date);
-
   const hijriYear = m.iYear();
-  const hijriMonth = m.iMonth(); // 0-11
-  const hijriDay = m.iDate();
 
-  let dayOfYear = hijriDay;
-  for(let i = 0; i < hijriMonth; i++) {
-    dayOfYear += moment().iYear(hijriYear).iMonth(i).iDaysInMonth();
+  // تعداد روزهای سال قمری (معمولاً 354 یا 355 روز)
+  const totalDays = m.clone().iYear(hijriYear).iDaysInYear();
+
+  // روز جاری در سال قمری
+  let dayOfYear = 0;
+  for (let i = 0; i < m.iMonth(); i++) {
+    dayOfYear += m.clone().iYear(hijriYear).iMonth(i).iDaysInMonth();
   }
-  const totalDays = moment().iYear(hijriYear).iDaysInYear();
+  dayOfYear += m.iDate();
 
   return (dayOfYear / totalDays) * 100;
 }
@@ -413,5 +409,6 @@ setInterval(updateProgressBars, 60 * 60 * 1000); // هر ساعت آپدیت ش�
   </script>
 </body>
 </html>
+
 
 
