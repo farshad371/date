@@ -86,50 +86,6 @@
       width: 0;
       transition: width 1.5s ease;
     }
-    /* نوار پیشرفت سال */
-    .progress-container {
-  margin-top: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 420px;
-}
-
-.progress-label {
-  font-weight: bold;
-  margin-bottom: 4px;
-  text-align: right;
-  direction: rtl;
-}
-
-.progress-bar {
-  height: 12px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  transition: width 1s ease-in-out;
-  border-radius: 8px;
-}
-
-.progress-shamsi {
-  background: #ffeb3b;
-}
-
-.progress-miladi {
-  background: #03dac6;
-}
-
-.progress-ghamari {
-  background: #ff6f61;
-}
-
 
     /* ساعت نئونی گوشه بالا راست */
     #digitalClock {
@@ -188,27 +144,6 @@
 
     <p class="date-title">🌙 قمری</p>
     <p id="ghamari" class="ghamari">در حال بارگذاری...</p>
-    <div class="progress-container">
-  <div>
-    <div class="progress-label shamsi">پیشرفت سال شمسی</div>
-    <div class="progress-bar">
-      <div id="progressShamsi" class="progress-fill progress-shamsi"></div>
-    </div>
-  </div>
-  <div>
-    <div class="progress-label miladi">پیشرفت سال میلادی</div>
-    <div class="progress-bar">
-      <div id="progressMiladi" class="progress-fill progress-miladi"></div>
-    </div>
-  </div>
-  <div>
-    <div class="progress-label ghamari">پیشرفت سال قمری</div>
-    <div class="progress-bar">
-      <div id="progressGhamari" class="progress-fill progress-ghamari"></div>
-    </div>
-  </div>
-</div>
-
 
     <div id="status" class="status">
       <div class="dot"></div>
@@ -216,9 +151,7 @@
       <div id="loadingBar" class="loading-bar"></div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/jalaali-js@1.1.0/dist/jalaali.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-hijri/2.2.0/moment-hijri.min.js"></script>
+
   <script>
     const miladiMonthsFa = [
       "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
@@ -243,24 +176,24 @@
     }
 
     function getMiladiDate(date) {
-  const day = date.getDate();
-  const monthNum = date.getMonth() + 1;
-  const monthFa = miladiMonthsFa[date.getMonth()];
-  const monthEn = miladiMonthsEn[date.getMonth()];
-  const year = date.getFullYear();
-  const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(date);
-  return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year};
-}
+      const day = date.getDate();
+      const monthNum = date.getMonth() + 1;
+      const monthFa = miladiMonthsFa[date.getMonth()];
+      const monthEn = miladiMonthsEn[date.getMonth()];
+      const year = date.getFullYear();
+      const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long' }).format(date);
+      return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthEn}) ${year};
+    }
 
     function getGhamariDate(date) {
-  const day = new Intl.DateTimeFormat('ar-TN', { day: 'numeric', calendar: 'islamic-umalqura' }).format(date);
-  const monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(date), 10);
-  const year = new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(date);
-  const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(date);
-  const monthFa = ghamariMonthsFa[monthNum - 1];
-  const monthAr = ghamariMonthsAr[monthNum - 1];
-  return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year};
-}
+      const day = new Intl.DateTimeFormat('ar-TN', { day: 'numeric', calendar: 'islamic-umalqura' }).format(date);
+      const monthNum = parseInt(new Intl.DateTimeFormat('ar-TN', { month: 'numeric', calendar: 'islamic-umalqura' }).format(date), 10);
+      const year = new Intl.DateTimeFormat('ar-TN', { year: 'numeric', calendar: 'islamic-umalqura' }).format(date);
+      const weekday = new Intl.DateTimeFormat('fa-IR', { weekday: 'long', calendar: 'islamic-umalqura' }).format(date);
+      const monthFa = ghamariMonthsFa[monthNum - 1];
+      const monthAr = ghamariMonthsAr[monthNum - 1];
+      return ${weekday} ${day} ${monthFa} (ماه ${monthNum} – ${monthAr}) ${year};
+    }
 
     function showSystemDates() {
       const now = new Date();
@@ -268,69 +201,6 @@
       document.getElementById('miladi').textContent = getMiladiDate(now);
       document.getElementById('ghamari').textContent = getGhamariDate(now);
     }
-    // محاسبه تعداد روزهای سال میلادی (برای سال کبیسه)  
-function daysInYear(year) {
-  return ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) ? 366 : 365;
-}
-
-// محاسبه درصد پیشرفت روز در سال میلادی
-function progressMiladi(date) {
-  const start = new Date(date.getFullYear(), 0, 1);
-  const dayOfYear = Math.floor((date - start) / (1000 * 60 * 60 * 24)) + 1;
-  return (dayOfYear / daysInYear(date.getFullYear())) * 100;
-}
-
-// محاسبه درصد پیشرفت روز در سال شمسی
-function progressShamsi(date) {
-  const jDate = jalaali.toJalaali(date); // تبدیل میلادی به شمسی
-  const year = jDate.jy;
-  const month = jDate.jm;
-  const day = jDate.jd;
-
-  // تعداد روزهای هر ماه شمسی
-  const daysInMonth = [31,31,31,31,31,31,30,30,30,30,30,29];
-  // سال کبیسه شمسی
-  const isLeap = jalaali.isLeapJalaaliYear(year);
-  if (isLeap) daysInMonth[11] = 30;
-
-  // محاسبه روز جاری در سال شمسی
-  let dayOfYear = day;
-  for(let i=0; i < month - 1; i++) {
-    dayOfYear += daysInMonth[i];
-  }
-
-  const totalDays = isLeap ? 366 : 365;
-  return (dayOfYear / totalDays) * 100;
-}
-function progressGhamari(date) {
-  const m = moment(date);
-
-  const hijriYear = m.iYear();
-  const hijriMonth = m.iMonth(); // 0-11
-  const hijriDay = m.iDate();
-
-  let dayOfYear = hijriDay;
-  for(let i=0; i < hijriMonth; i++) {
-    dayOfYear += moment().iYear(hijriYear).iMonth(i).iDaysInMonth();
-  }
-  const totalDays = moment().iYear(hijriYear).iDaysInYear();
-
-  return (dayOfYear / totalDays) * 100;
-}
-function updateProgressBars() {
-  const now = new Date();
-  const progressS = progressShamsi(now);
-  const progressM = progressMiladi(now);
-  const progressG = progressGhamari(now);
-
-  document.getElementById('progressShamsi').style.width = progressS + '%';
-  document.getElementById('progressMiladi').style.width = progressM + '%';
-  document.getElementById('progressGhamari').style.width = progressG + '%';
-}
-
-updateProgressBars();
-setInterval(updateProgressBars, 60 * 60 * 1000); // هر ساعت آپدیت شود
-
 
     function setStatus(isOnline) {
       const statusDiv = document.getElementById('status');
@@ -374,15 +244,16 @@ setInterval(updateProgressBars, 60 * 60 * 1000); // هر ساعت آپدیت ش�
     }
 
     function updateClock() {
-  const now = new Date();
-  let h = now.getHours();
-  let m = now.getMinutes();
+      const now = new Date();
+      let h = now.getHours();
+      let m = now.getMinutes();
 
-  h = h < 10 ? '0' + h : h;
-  m = m < 10 ? '0' + m : m;
+      // افزودن صفر پیشوند به اعداد تک رقمی
+      h = h < 10 ? '0' + h : h;
+      m = m < 10 ? '0' + m : m;
 
-  document.getElementById('timeText').textContent = ${h}:${m};
-}
+      document.getElementById('timeText').textContent = ${h}:${m};
+    }
 
     showSystemDates();
     setStatus(false);
