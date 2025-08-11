@@ -278,106 +278,42 @@
   </script>
 </body>
 </html>
-<!-- کادر دوم: نوارهای پیشرفت سال -->
-<div id="progressBarsContainer">
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressShamsi"></div>
-  </div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressMiladi"></div>
-  </div>
-  <div class="progress-bar-bg">
-    <div class="progress-bar-fill" id="progressGhamari"></div>
-  </div>
-</div>
+/* فقط برای کادر دوم: */
+#progressBarsContainer {
+  width: 90%;
+  max-width: 420px;
+  padding: 20px;
+  margin: 0 auto 20px auto;  /* فقط بالا صفر، پایین 20px، چپ و راست auto */
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
 
-<style>
-  /* تنظیمات دقیق عرض و وسط چین */
-  #progressBarsContainer {
-    width: 90%;
-    max-width: 420px;
-    padding: 20px;
-    margin: 20px auto; /* فقط فاصله عمودی و وسط چین افقی */
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-  }
-  .progress-bar-bg {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 8px;
-    height: 16px;
-    margin: 8px 0;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 8px;
-    transition: width 2s ease-in-out;
-    display: block;
-  }
-  #progressShamsi {
-    background-color: #ffeb3b;
-  }
-  #progressMiladi {
-    background-color: #03dac6;
-  }
-  #progressGhamari {
-    background-color: #ff6f61;
-  }
-</style>
+/* اطمینان از اینکه بدنه صفحه وسط چین باشد */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* وسط چین عمودی بچه‌ها */
+}
 
-<script>
-  function getShamsiYearProgress() {
-    const today = new Date();
-    const start = new Date(today.getFullYear(), 2, 21); // 21 مارس (شروع سال شمسی)
-    const end = new Date(today.getFullYear() + 1, 2, 20);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
+/* تنظیمات داخلی نوارها */
+.progress-bar-bg {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  height: 16px;
+  margin: 8px 0;
+  overflow: hidden;
+  width: 100%; /* حتما عرض کامل */
+}
 
-  function getMiladiYearProgress() {
-    const today = new Date();
-    const start = new Date(today.getFullYear(), 0, 1);
-    const end = new Date(today.getFullYear() + 1, 0, 1);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 8px;
+  transition: width 2s ease-in-out;
+  display: block;
+}
 
-  function getGhamariYearProgress() {
-    const today = new Date();
-    const islamicCalendar = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {year: 'numeric'});
-    const currentYear = parseInt(islamicCalendar.format(today));
-    function islamicToGregorian(year) {
-      if(year === 1446) return new Date(2024, 6, 17);
-      if(year === 1447) return new Date(2025, 6, 7);
-      if(year === 1448) return new Date(2026, 5, 27);
-      return new Date(2024, 6, 17);
-    }
-    const start = islamicToGregorian(currentYear);
-    const end = islamicToGregorian(currentYear + 1);
-    const progress = (today - start) / (end - start);
-    return Math.min(Math.max(progress, 0), 1) * 100;
-  }
-
-  function animateProgressBars() {
-    const shamsiPercent = getShamsiYearProgress();
-    const miladiPercent = getMiladiYearProgress();
-    const ghamariPercent = getGhamariYearProgress();
-
-    document.getElementById('progressShamsi').style.width = '0%';
-    document.getElementById('progressMiladi').style.width = '0%';
-    document.getElementById('progressGhamari').style.width = '0%';
-
-    setTimeout(() => {
-      document.getElementById('progressShamsi').style.width = shamsiPercent + '%';
-      document.getElementById('progressMiladi').style.width = miladiPercent + '%';
-      document.getElementById('progressGhamari').style.width = ghamariPercent + '%';
-    }, 1000);
-  }
-
-  animateProgressBars();
-</script>
 
